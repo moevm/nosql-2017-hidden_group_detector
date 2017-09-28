@@ -1,10 +1,4 @@
-.php_cs.cache
-bin/*
-cache/
+vendor
+composer.phar
 composer.lock
-neoclient.yml
-test.php
-tests/_reports
-tests/database_settings.yml
-vendor/
-phpunit.xml
+.idea
