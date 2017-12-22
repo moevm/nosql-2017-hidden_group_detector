@@ -1,0 +1,83 @@
+/* Nodes */
+
+    /*!* Root Node Caption *!*/
+    /*.hGroup text {*/
+        /*!* display: block; *!*/
+        /*font-size: 15px;*/
+        /*fill: #ff6e00;*/
+    /*}*/
+    /*!* Node Captions *!*/
+    /*.user text {*/
+        /*!* display: block; *!*/
+        /*font-size: 10px;*/
+        /*fill: #00fff7;*/
+    /*}*/
+
+/* Nodes */
+
+/* Root Node Caption */
+.hGroup text {
+    /* font-style: italic;
+    font-size: 15px; */
+    font: 15pt bold Sans-serif;
+    fill: #5cacee;
+    /* fill: black; */
+    text-shadow: none;
+}
+/* Node Captions */
+.user text {
+    /* font-size: 10px; */
+    font: 12pt bold Sans-serif;
+    /* fill: #00fff7; */
+    fill: black;
+    text-shadow: none;
+}
+
+/*#alchemy {*/
+    /*border: 2px solid black;*/
+/*}*/
+
+/* info aboun graph node */
+#nodeInfo { /*Главный див с информацией об узлах*/
+    text-align: center;
+    align-items: center;
+
+    display: inline-block;
+
+    margin: 20px;
+
+    width: 400px;
+    min-height: 200px;
+    border: 2px solid #aaa;
+    border-radius: 8px;
+
+    /* background-color: #FFEBCD; */
+    background-color: #8470FF;
+}
+
+#nodeNoneInfo { /* Информация о том, что нужно кликнуть по узлу*/
+    display: block;
+    margin-top: 20px;
+}
+
+#innerUserInfo { /* Информация об узле-пользователе*/
+    display: none;
+    text-align: left;
+    /* margin: 10px 10px 10px 80px; */
+    margin: 10px 0px;
+}
+#innerGroupInfo { /* Информация об узле-группе*/
+    display: none;
+    text-align: left;
+    margin: 10px 0px;
+    /* margin: 10px 10px 10px 80px; */
+}
+
+.infoUnits{ /* Шрифты для названия полей информации*/
+    font: 12pt bold sans-serif ;
+    color: maroon
+}
+.infoContain { /* Шрифты для содержимого полей информации*/
+    font-variant: small-caps;
+}
+

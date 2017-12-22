@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- <link rel="stylesheet" src="dependencies/alchemy.min.css">
+  <link rel="stylesheet" src="dependencies/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script> -->
+
+  <link rel="stylesheet" type="text/css" href="dependencies/styles/vendor.css">
+  <link rel="stylesheet" href="dependencies/alchemy.css">
+  <link rel="stylesheet" href="main.css">
+  <script type="text/javascript" src="dependencies/scripts/vendor.js"></script>
+  <script type="text/javascript" src="dependencies/alchemy.js"></script>
+</head>
+<body>
+  <h1>Our graph</h1>
+  <div class="alchemy" id="alchemy"></div>
+
+  <script type="text/javascript" src="dependencies/alchemy.min.js"></script>
+  <script type="text/javascript">
+
+        var data = {
+          "comment": "Члены скрытой группы 'Пользователи Мегафон'",
+          "nodes": [
+            {
+              "caption": "Дронников",
+              "last_name": "Дронников",
+              "phone": "+79865432100",
+              "first_name": "Игорь",
+              "bdate": "10.8.1996",
+              "role": "user",
+              "id": 4908520
+            },
+            {
+              "caption": "Исмаилов",
+              "last_name": "Исмаилов",
+              "phone": "+79235889231",
+              "first_name": "Руслан",
+              "bdate": "25.5.1996",
+              "role": "user",
+              "id": 224124727
+            },
+            {
+              "caption": "Пользователи Мегафон",
+              "role": "hGroup",
+              "id": 0,
+              "root": false
+            },
+          ],
+          "edges": [
+            {
+              "source": 4908520,
+              "target": 0,
+              "caption": "isProvidedBy"
+            },
+            {
+              "source": 224124727,
+              "target": 0,
+              "caption": "isProvidedBy"
+            }
+          ]
+        }
+
+        // graph configuration
+        var config = {
+
+            dataSource: data,
+
+            forceLocked: false,
+            nodeCaption: "caption",
+            nodeCaptionsOnByDefault: true,
+
+            graphHeight: function(){ return 600; },
+            graphWidth: function(){ return 600; },
+
+            nodeTypes: {"role": ["hGroup", "user"]},
+
+            nodeStyle: {
+                "hGroup": {
+                    color: "#DD79FF",
+                    radius: 20,
+                    borderWidth: 0
+                },
+                "user":{
+                    color:"5168ff",
+                    radius: 10,
+                    borderWidth: 0
+                }
+            },
+
+            nodeMouseOver: function(node) {
+              return node.caption + "член"
+            }
+        }
+        alchemy = new Alchemy(config)
+    </script>
+  </body>
+</html>
