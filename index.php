@@ -52,15 +52,16 @@ $chtest2 = $_POST['checkbox-test2'];
 $hid_name = $_POST['hidden_name'];
 session_start();
 $_SESSION['hid_group'] = $hid_name;
+echo $hid_name.'<br>';
 
-echo $vkid . '<br>';
-echo $chtest1 . '<br>';
-echo $chtest2 . '<br>';
-echo $hid_name . '<br>';
-
-echo $_SERVER['PHP_SELF'];
-
-echo $link = '<p><a href="https://oauth.vk.com/authorize?client_id=6199555&display=page&redirect_uri=vk.com/&scope=friends&response_type=code&v=5.69">Аутентификация через ВКонтакте</a></p>';
+//echo $vkid . '<br>';
+//echo $chtest1 . '<br>';
+//echo $chtest2 . '<br>';
+//echo $hid_name . '<br>';
+//
+//echo $_SERVER['PHP_SELF'];
+//
+//echo $link = '<p><a href="https://oauth.vk.com/authorize?client_id=6199555&display=page&redirect_uri=vk.com/&scope=friends&response_type=code&v=5.69">Аутентификация через ВКонтакте</a></p>';
 $_GET['code']
 
 
@@ -74,8 +75,8 @@ $request_params = [
     'screen_name' => $vkid];
 $url = 'https://api.vk.com/method/utils.resolveScreenName?' . http_build_query($request_params);
 $response = json_decode(file_get_contents($url), true);
-echo $url;
-echo $response['response']['type'];
+//echo $url;
+//echo $response['response']['type'];
 $type_id = $response['response']['type'];
 $object_id = $response['response']['object_id'];
 ?>
@@ -129,8 +130,8 @@ if ($type_id == 'group') {
     $url = "https://api.vk.com/method/groups.getById?" . http_build_query($request_par); //getById getSettings
     $result = json_decode(file_get_contents($url), true);
 
-    echo "<br>";
-    echo $url . '<br>';
+//    echo "<br>";
+//    echo $url . '<br>';
 
     $publos = $result['response'][0];
 
@@ -140,7 +141,7 @@ if ($type_id == 'group') {
         'description' => $publos['description'], 'photo' => $publos['photo_medium'], 'count' => $publos['members_count']];
 
 
-    echo $params['description'] . '<br>';  //
+//    echo $params['description'] . '<br>';  //
 
     $quer = <<<EOQ
 CREATE (n:Group {gid: {gid},
@@ -148,7 +149,7 @@ name: {name} ,description: {description}, photo: {photo} ,
 count : {count} } )  ;
 EOQ;
 
-    $fields = ['connections', 'site', 'education', 'contacts', 'city', 'music', 'movies', 'sex', 'wall_comments', 'relation', 'schools', 'personal', 'tv', 'bdate', 'last_seen'];
+    $fields = ['connections', 'site', 'education', 'contacts', 'city', 'music', 'movies', 'sex', 'wall_comments', 'relation', 'schools', 'personal', 'tv', 'bdate', 'last_seen' , 'screen_name']; //добавил  , 'screen_name'
 
     $request_par = [
         'group_id' => $vkid,
@@ -163,7 +164,7 @@ EOQ;
 
     $result = json_decode(file_get_contents($url), true);
 
-    echo $url . '<br>';
+//    echo $url . '<br>';
 
 
     $users = $result['response']['users'];
@@ -209,6 +210,7 @@ SET n.relation = att.relation
 SET n.alcohol = att.personal.alcohol
 SET n.smoking = att.personal.smoking
 SET n.device = att.last_seen.platform 
+SET n.screen_name = att.screen_name
 SET n.sub_gr = {pub_name});
 EOQ;
 
@@ -224,7 +226,7 @@ EOQ;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 else {
 //    echo "АЗАЗАЗА".'<br>';
-    $fields = ['connections', 'site', 'education', 'contacts', 'city', 'music', 'movies', 'sex', 'wall_comments', 'relation', 'schools', 'personal', 'tv', 'bdate', 'last_seen'];
+    $fields = ['connections', 'site', 'education', 'contacts', 'city', 'music', 'movies', 'sex', 'wall_comments', 'relation', 'schools', 'personal', 'tv', 'bdate', 'last_seen', 'screen_name']; // , 'screen_name'
     $request_par = [
         'user_ids' => $vkid,
         'access_token' => $token,
@@ -260,7 +262,8 @@ SET n.langs = {att}.personal.langs
 SET n.relation = {att}.relation
 SET n.alcohol = {att}.personal.alcohol
 SET n.smoking = {att}.personal.smoking
-SET n.device = {att}.last_seen.platform;
+SET n.device = {att}.last_seen.platform
+SET n.screen_name = {att}.screen_name;
 EOQ;
     $client->run($quer, ['att' => $result['response'][0]]);
 //    echo 'Здесь что-то есть'.'<br>';
@@ -322,7 +325,8 @@ SET n.langs = att.personal.langs
 SET n.relation = att.relation
 SET n.alcohol = att.personal.alcohol
 SET n.smoking = att.personal.smoking
-SET n.device = att.last_seen.platform);
+SET n.device = att.last_seen.platform
+SET n.screen_name = att.screen_name);
 EOQ;
 
 
@@ -331,7 +335,7 @@ EOQ;
 //    var_dump($sasat);
     $params = ['new_friends' => $users ]; //тут может не надо 0 ебаный
     $client->run($query,['ats' => $users ]);
-    echo "ЗДЕСЬ".'<br>';
+//    echo "ЗДЕСЬ".'<br>';
 
     $_SESSION['u'] = 1; // поользоваетль
 
@@ -464,7 +468,7 @@ EOQ;
 
 //Запрос на поиск МТС-пользователей
 
-echo "ПОКА НЕ МТС" . '<br>';
+//echo "ПОКА НЕ МТС" . '<br>';
 
 //
 //$query = <<<EOQ
@@ -483,20 +487,20 @@ echo "ПОКА НЕ МТС" . '<br>';
 //EOQ;
 
 
-$palec =  $client->run("match (n) return n;");
-$json_palec = json_encode(array($palec->records()));
-//var_dump($palec->records());
-echo '<br>'.'ЧТО так'.'<br>';
-//var_dump($json_palec);
-
-$_SESSION['myj'] = $json_palec;
-
+//$palec =  $client->run("match (n) return n;");
+//$json_palec = json_encode(array($palec->records()));
+////var_dump($palec->records());
+////echo '<br>'.'ЧТО так'.'<br>';
+////var_dump($json_palec);
+//
+//$_SESSION['myj'] = $json_palec;
+//
 $_SESSION['h'] = 1;
 
-echo $_SESSION['hid_group'].'<br>';
-echo $_SESSION['h'].'<br>';
-
-echo "МТС" . '<br>';
+//echo $_SESSION['hid_group'].'<br>';
+//echo $_SESSION['h'].'<br>';
+//
+//echo "МТС" . '<br>';
 //запрос на билайн-пользователей
 //match (n) where n.phone =~ '^.*[9](([0][35689])|([5][13])|(6[0-9])).*$'
 //return n.phone;
@@ -529,7 +533,7 @@ echo "МТС" . '<br>';
 //$usersid = array("9762442", "146120368"); //'0'=> '1'=>
 //$usersid = ['0' =>9762442, '1' =>146120368];
 //$usersid =
-echo "<br><br><br>";
+//echo "<br><br><br>";
 //$code = urlencode('var b = [210700286,164283384];'
 //    .'var c = 0;'
 //    .'var i = 0;'
@@ -553,6 +557,35 @@ echo "<br><br><br>";
 //$url = "https://api.vk.com/method/execute?code=".$code."&access_token=".$token."&userid=".$usersid;//."&usersid=".$usersid;
 //echo ($url);
 
+//ПРОБУЕМ ЭТУ ФУНКЦИЮ для преобразования объекта рекурсивного в массив
+//function obj2arr($obj)
+//{
+//    if (!is_object($obj) && !is_array($obj)) return $obj;
+//    if (is_object($obj)) {
+//        $obj = get_object_vars($obj);
+//    }
+//    if (is_array($obj)) {
+//        foreach ($obj as $key => $val) {
+//            $obj[$key] = $this->obj2arr($val);
+//        }
+//    }
+//    return $obj;
+//}
+echo "ЛОЛ";
+//function obj2arr($obj)
+//{
+//    if (!is_object($obj) && !is_array($obj)) return $obj;
+//    if (is_object($obj)) {
+//        $obj = get_object_vars($obj);
+//    }
+//    if (is_array($obj)) {
+//        foreach ($obj as $key => $val) {
+//            $obj[$key] = $this->obj2arr($val);
+//        }
+//    }
+//    return $obj;
+//}
+
 class Vkapi_Model_Api {
 
     private $_accessToken = null;
@@ -574,8 +607,9 @@ class Vkapi_Model_Api {
             return null;
         }
 
-        $responseObj = json_decode($responseStr);
+        $responseObj = json_decode($responseStr, true); //добавил true  в конце
         return $responseObj;
+//        return $responseStr;
     }
 
     private function _params($params)
@@ -587,96 +621,132 @@ class Vkapi_Model_Api {
         return implode('&', $pice);
     }
 }
-//
-//$newus = json_encode($usersid);
-//$newus = json_decode($newus);
-//var_dump($newus);
-//$newus = json_decode($newus);
-//echo '<br><br><br>';
+
 $code = 'var a;'
     .'var itemList = [];'
     .'var i = 0;'
     .'var parameter = "";'
     .'var start = 0;'
     .'var targets = Args.userid;'
-//    .'while (i < 2) {'
-//   .'a = a + [API.users.get({"user_ids": Args.userid[i] , "fields": "counters"})];'
     .'while(start<targets.length){
      if (targets.substr(start, 1) != " " && start != targets.length){
          parameter = parameter + targets.substr(start, 1);
      }
     else {'
     .'a = API.users.get({"user_ids": parameter , "fields": "counters"});'
-//    .'var kek = Args.userid;'
     .'itemList.push(a); parameter = ""; }'
-//    .'i = i+1;}'
-//    .'} start = start + parameter.length + 1; parameter = "";}'
     .'start = start + 1;}'
     .'return itemList;';
 
 $api = new Vkapi_Model_Api($token);
 
-$newusers = $client->run("match (n:User) return n.uid");
+if($hid_name=='Меломаны' || 'Видеофилы' || 'Высокого мнения о себе'){
+//    echo "ЗАШЛИ СЮДА".'<br>';
+    $newusers = $client->run("match (n:User) return n.uid");
 
-$user_arr = [];
-$indx = 0;
-foreach ($newusers->records() as $record){
+    $user_arr = [];
+    $indx = 0;
+    foreach ($newusers->records() as $record){
 //    if (++$indx > 25) break;
 //    var_dump($record->get('n.uid'));
-    $user_arr[$indx] = $record->get('n.uid');
-    $indx++;// = $user_arr.(string)$record->get('n.uid').' ';
-}
-$indx =0;
-var_dump($user_arr);
+        $user_arr[$indx] = $record->get('n.uid');
+        $indx++;// = $user_arr.(string)$record->get('n.uid').' ';
+    }
+    $indx =0;
+//    var_dump($user_arr);
 
-$number = count($user_arr);
+    $number = count($user_arr);
 
-$mer_arr = [];
+    $mer_arr = [];
 
-echo '<br><br><br>';
-for ($k = 0; $k < 9 && $number > 0;$k++){ // сделаю 9, окей надо 40, конечно
+//    echo '<br><br><br>';
+    for ($k = 0; $k < 9 && $number > 0;$k++){ // сделаю 9, окей надо 40, конечно
 //while($number > 0){
-    $part_25 = '';
-    echo '<br><br>'.$k.' -итерация'.PHP_EOL;
+        $part_25 = '';
+//        echo '<br><br>'.$k.' -итерация'.PHP_EOL;
 //    if ($k%9==0){
 //        echo 'поспим'.PHP_EOL;
 //        sleep(4);
 //    }
 
 
-    for ($i = 0; $i< 25 && $number > 0; $i++) {
+        for ($i = 0; $i< 25 && $number > 0; $i++) {
 
-        $part_25 = $part_25.(string)array_shift($user_arr).' ';
-        $number--; //минус 1 элемент
+            $part_25 = $part_25.(string)array_shift($user_arr).' ';
+            $number--; //минус 1 элемент
+        }
+
+//        echo '<br><br><br>';
+//        var_dump($part_25);
+//        echo '<br><br>'.'ОТВЕТ'.'<br>';
+        $response = $api->api('execute',array('code' => $code,'userid'=>$part_25 )); //$usersid (array)
+
+//
+//        $url = "https://api.vk.com/method/execute?code=".urlencode($code)."&userid=".$part_25."&access_token=".$token;//."&usersid=".$usersid;
+//        var_dump($url);
+//        $response = file_get_contents($url);//json_decode(file_get_contents($url),true);
+//        echo "НУ, за старое, нахуй".'<br>';
+//        var_dump($response); echo '<br>';
+//        echo "НУ, за МОЛОДОЕ НАХУЙ, нахуй".'<br>';
+
+        //мега-костыль
+        $new_arr_res = [];
+        $remake_res = $response['response'];
+        foreach( $remake_res as $user ){
+//            var_dump($user); echo '<br>';
+            array_push($new_arr_res,$user[0]);
+        }
+//        echo 'А ТЕПЕРЬ РАЗНИЦА БЛЯЬ'.'<br>';
+//        var_dump($new_arr_res);
+
+//        var_dump($response); // ['response']
+        $mer_arr = array_merge($mer_arr,$new_arr_res); //попытка ['response']
+//        echo '<br><br>'.'НУ ЧЕ ТАМ У ХОХЛОВ ?'.'<br>';
     }
-//    echo 'здесь'.'<br>';
-    echo '<br><br><br>';
-    var_dump($part_25);
-    echo '<br><br>'.'ОТВЕТ'.'<br>';
-    $response = (array)$api->api('execute',array('code' => $code,'userid'=>$part_25 )); //$usersid
-    var_dump($response['response']);
-    $mer_arr = array_merge($mer_arr,$response['response']); //попытка
-    echo '<br><br>'.'НУ ЧЕ ТАМ У ХОХЛОВ ?'.'<br>';
+
+//    echo '<br>'.'вышли'.PHP_EOL;
+//    var_dump($mer_arr);
+//    echo '<br>'.'ПОПРОБУЕМ'.'<br>';
+
+    /////////////
+    /// Запись в БД данных
+    ///
+    ///
+    ///
+    ///
+    ///
+    $query = <<<EOQ
+match (n:User) where n.uid = {man}.uid
+set n.audios = {man}.counters.audios
+set n.videos = {man}.counters.videos
+set n.albums = {man}.counters.albums
+set n.photos = {man}.counters.photos
+set n.friends = {man}.counters.friends
+set n.online_friends = {man}.counters.online_friends
+set n.followers = {man}.counters.followers
+set n.subscriptions = {man}.counters.subscriptions
+set n.pages = {man}.counters.pages
+set n.groups = {man}.counters.groups
+;
+EOQ;
+
+    foreach($mer_arr as $user){
+//        var_dump($user); echo '<br>';
+        $client->run($query, ['man' => $user ]);
+   }
+//    echo "Получилось ?".'<br>';
+
 }
-
-echo '<br>'.'вышли'.PHP_EOL;
-var_dump($mer_arr);
-
-//for ($i = 0; $i< 3; $i++){
-
-//   / echo 'БЫЛО '.$i.'<br>'; &&
-//}
-//$response = $api->api('execute',array('code' => $code,'userid'=>$user_arr )); //$usersid
-//var_dump($response);
+echo "ну че";
 
 ?>
 
 <?php
 //echo '<script> location("http://localhost:63342/php3/vkek.php");</script>';
 //exit();
-//
-//header('Location: http://localhost:63342/php3/vkek.php');
-//exit();
+
+header('Location: http://localhost:63342/php3/vkek.php');
+exit();
 ?>
 
 

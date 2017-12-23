@@ -20,6 +20,14 @@ $neo4j_url = "bolt://neo4j:azizakek@localhost";
 $client = ClientBuilder::create()
     ->addConnection('default',  $neo4j_url)
     ->build();
+////////ЗАПРОСЫ
+/// МЕЛОМАНЫ
+/// match (n:User) where n.audios >200 return n;
+/// ВИДЕОСОСЫ
+/// match (n:User) where n.videos >100 return n;
+/// ВЫСОКОГО МНЕНИЯ О СЕБЕ
+/// match (n:User) where n.friends is not null and n.followers / n.friends> 0.8 return n
+///
 
 
 
@@ -69,10 +77,28 @@ EOQ;
                                     }
                                     else if($_SESSION['hid_group'] == "Меломаны"){
                                         $query = <<<EOQ
-match (n:User) where n.device in [2,3]
-Merge (g:HiddenGroup {name: "iOS"})
-SET n:iOS
-CREATE (n)-[r:Uses]->(g)
+match (n:User) where n.audios >200
+Merge (g:HiddenGroup {name: "Меломаны"})
+SET n:Music
+CREATE (n)-[r:In]->(g)
+return n as id, TYPE(r), g as group;
+EOQ;
+                                    }
+                                    else if($_SESSION['hid_group'] == "Видеофилы"){
+                                        $query = <<<EOQ
+match (n:User) where n.videos >100
+Merge (g:HiddenGroup {name: "Видеофилы"})
+SET n:Video
+CREATE (n)-[r:In]->(g)
+return n as id, TYPE(r), g as group;
+EOQ;
+                                    }
+                                    else if($_SESSION['hid_group'] == "Высокого мнения о себе"){
+                                        $query = <<<EOQ
+match (n:User) where n.friends <> 0 and n.followers / n.friends> 0.8
+Merge (g:HiddenGroup {name: "Зазнавшиеся"})
+SET n:ЧСВ
+CREATE (n)-[r:In]->(g)
 return n as id, TYPE(r), g as group;
 EOQ;
                                     }
@@ -122,6 +148,10 @@ EOQ;
 //                                            echo $graph_array['nodes'][$i]['bdate'].'<br>';
 
                                         $graph_array['nodes'][$i]['id'] = $record->getByIndex(0)->get('uid');
+//                                        echo $graph_array['nodes'][$i]['id'].'<br>';
+
+                                        //НОВОЕ
+                                        $graph_array['nodes'][$i]['screen_name'] = $record->getByIndex(0)->get('screen_name');
 //                                        echo $graph_array['nodes'][$i]['id'].'<br>';
 
                                         $graph_array['nodes'][$i]['caption'] = $graph_array['nodes'][$i]['last_name'];
@@ -253,7 +283,7 @@ EOQ;
                                     </div>
                                     <select name="hidden_name">
                                         <option><span class="cool_words">Меломаны</span></option>
-                                        <option><span class="cool_words">Видеососы</span></option>
+                                        <option><span class="cool_words">Видеофилы</span></option>
                                         <option><span class="cool_words">Высокого мнения о себе</span></option>
                                         <option><span class="cool_words">Абоненты Мегафон</span></option>
                                         <option><span class="cool_words">Пользователи Android</span></option>
@@ -262,32 +292,32 @@ EOQ;
                                     </select>
                                 </div>
 
-                                    <br>
-                                    <div class="logo">
-                                        <span>Выбор параметров пользователем</span>
-                                    </div>
-                                    <div class="cool_words" id="no-center">
-                                     <label>
-                                        <input class="checkbox" type="checkbox" name="checkbox-test1">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="label">Пол</span>
-                                     </label>
-                                    <label>
-                                        <input class="checkbox" type="checkbox" name="checkbox-test2">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="label">Возраст</span>
-                                    </label>
-                                    <label>
-                                        <input class="checkbox" type="checkbox" name="checkbox-test3">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="label">Сообщества?</span>
-                                    </label>
-                                    <label>
-                                        <input class="checkbox" type="checkbox" name="checkbox-test4">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="label">Аудио?</span>
-                                    </label>
-                                    </div>
+<!--                                    <br>-->
+<!--                                    <div class="logo">-->
+<!--                                        <span>Выбор параметров пользователем</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="cool_words" id="no-center">-->
+<!--                                     <label>-->
+<!--                                        <input class="checkbox" type="checkbox" name="checkbox-test1">-->
+<!--                                        <span class="checkbox-custom"></span>-->
+<!--                                        <span class="label">Пол</span>-->
+<!--                                     </label>-->
+<!--                                    <label>-->
+<!--                                        <input class="checkbox" type="checkbox" name="checkbox-test2">-->
+<!--                                        <span class="checkbox-custom"></span>-->
+<!--                                        <span class="label">Возраст</span>-->
+<!--                                    </label>-->
+<!--                                    <label>-->
+<!--                                        <input class="checkbox" type="checkbox" name="checkbox-test3">-->
+<!--                                        <span class="checkbox-custom"></span>-->
+<!--                                        <span class="label">Сообщества?</span>-->
+<!--                                    </label>-->
+<!--                                    <label>-->
+<!--                                        <input class="checkbox" type="checkbox" name="checkbox-test4">-->
+<!--                                        <span class="checkbox-custom"></span>-->
+<!--                                        <span class="label">Аудио?</span>-->
+<!--                                    </label>-->
+<!--                                    </div>-->
                                 <div>
                                     <button > <span class="cool_words">VKeK</span></button>
                                 </div>
@@ -346,6 +376,8 @@ EOQ;
                                                 document.getElementById('userName').innerHTML = node._properties.first_name + " " + node._properties.last_name;
                                                 document.getElementById('bdate').innerHTML = node._properties.bdate;
                                                 document.getElementById('phone').innerHTML = node._properties.phone;
+                                                document.getElementById('vk_add').href = "https://vk.com/" + node._properties.screen_name; //+ node._properties.screen_name;
+                                                document.getElementById('vk_add').innerHTML = node._properties.first_name;
 
                                                 document.getElementById('innerUserInfo').style.display = "inline-block";
                                                 document.getElementById('innerGroupInfo').style.display = "none";
@@ -377,6 +409,7 @@ EOQ;
                                     <font class="infoUnits">Пользователь: </font><font id="userName" class="infoContain"></font><br>
                                     <font class="infoUnits">Дата рождения: </font><font id="bdate"class="infoContain"></font><br>
                                     <font class="infoUnits">Телефон: </font><font id="phone"class="infoContain"></font><br>
+                                    <font class="infoUnits">Vk: </font><a id="vk_add"class="infoContain"></a><br>
                                 </div>
                                 <div id="innerGroupInfo">
                                     <font class="infoUnits">Скрытая группа: </font><font id="groupName" class="infoContain"></font><br>
